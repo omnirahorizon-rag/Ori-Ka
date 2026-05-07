@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ori'ka — Systemic Sovereignty</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --obsidian: #0B0B0C;
+    --gold: #C8A44D;
+    --gold-dim: #8a6e35;
+    --gold-faint: rgba(200,164,77,0.12);
+    --ash: #5E5E60;
+    --ash-light: #8a8a8c;
+    --bone: #E6E2D8;
+    --bone-dim: rgba(230,226,216,0.6);
+    --bone-faint: rgba(230,226,216,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--obsidian);
+    color: var(--bone);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(200,164,77,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9000;
+    opacity: 0.35;
+  }
+
+  /* ===================== NAV ===================== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 28px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(11,11,12,0.95) 0%, transparent 100%);
+  }
+
+  .nav-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ash-light);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ===================== HERO ===================== */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 60%, rgba(200,164,77,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 30% 40% at 20% 80%, rgba(200,164,77,0.04) 0%, transparent 60%);
+  }
+
+  .hero-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(200,164,77,0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(200,164,77,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 80% 80% at center, black 30%, transparent 100%);
+  }
+
+  .hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    padding: 0 40px;
+  }
+
+  .hero-sigil {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 40px;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.2s forwards;
+  }
+
+  .hero-sigil svg { width: 100%; height: 100%; }
+
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.4s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(60px, 10vw, 120px);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    color: var(--bone);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.6s forwards;
+  }
+
+  .hero-title span { color: var(--gold); }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 2.5vw, 22px);
+    font-style: italic;
+    color: var(--bone-dim);
+    line-height: 1.7;
+    max-width: 620px;
+    margin: 0 auto 56px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.8s forwards;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border: 1px solid rgba(200,164,77,0.4);
+    padding: 18px 40px;
+    transition: all 0.4s ease;
+    opacity: 0;
+    animation: fadeUp 1s ease 1s forwards;
+  }
+
+  .hero-cta:hover {
+    background: var(--gold-faint);
+    border-color: var(--gold);
+    letter-spacing: 0.5em;
+  }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.4s forwards;
+  }
+
+  .scroll-indicator span {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: 0.4em;
+    color: var(--ash);
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* ===================== SECTION BASE ===================== */
+  section { padding: 120px 60px; max-width: 1400px; margin: 0 auto; }
+
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--bone);
+    margin-bottom: 24px;
+  }
+
+  .section-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    line-height: 1.85;
+    color: var(--bone-dim);
+  }
+
+  /* ===================== MISSION ===================== */
+  #mission {
+    border-top: 1px solid rgba(200,164,77,0.12);
+    position: relative;
+  }
+
+  .mission-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .mission-items {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 40px;
+  }
+
+  .mission-item {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .mission-num {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    padding-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .mission-text h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--bone);
+    margin-bottom: 8px;
+  }
+
+  .mission-text p {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--ash-light);
+    font-weight: 300;
+  }
+
+  /* ===================== PILLARS ===================== */
+  #pillars { background: transparent; }
+
+  .pillars-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+
+  .pillar-card {
+    background: var(--bone-faint);
+    border: 1px solid rgba(200,164,77,0.08);
+    padding: 48px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+
+  .pillar-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+
+  .pillar-card:hover { background: rgba(200,164,77,0.07); }
+  .pillar-card:hover::before { transform: scaleX(1); }
+
+  .pillar-roman {
+    font-family: 'Cinzel', serif;
+    font-size: 40px;
+    font-weight: 900;
+    color: rgba(200,164,77,0.12);
+    line-height: 1;
+    margin-bottom: 24px;
+  }
+
+  .pillar-name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .pillar-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-style: italic;
+    color: var(--bone);
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+
+  .pillar-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--ash-light);
+    font-weight: 300;
+  }
+
+  /* ===================== COMMAND ===================== */
+  #command { border-top: 1px solid rgba(200,164,77,0.08); }
+
+  .command-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 100px;
+    align-items: start;
+  }
+
+  .command-roles {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 40px;
+  }
+
+  .role-item {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(200,164,77,0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .role-item:hover .role-name { color: var(--gold); }
+
+  .role-level {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: 0.4em;
+    color: var(--ash);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .role-name {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    color: var(--bone);
+    transition: color 0.3s;
+    margin-bottom: 6px;
+  }
+
+  .role-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--ash-light);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .command-detail {
+    position: sticky;
+    top: 120px;
+  }
+
+  .command-matrix {
+    background: var(--bone-faint);
+    border: 1px solid rgba(200,164,77,0.12);
+    padding: 48px;
+    margin-top: 40px;
+  }
+
+  .matrix-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-bottom: 32px;
+    text-transform: uppercase;
+  }
+
+  .matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .matrix-table th {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--ash);
+    text-transform: uppercase;
+    text-align: left;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(200,164,77,0.15);
+  }
+
+  .matrix-table td {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--bone-dim);
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-weight: 300;
+  }
+
+  .matrix-table td:first-child {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    color: var(--bone);
+    letter-spacing: 0.1em;
+    width: 140px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    padding: 4px 10px;
+    background: var(--gold-faint);
+    color: var(--gold);
+    border: 1px solid rgba(200,164,77,0.2);
+  }
+
+  /* ===================== DEPARTMENTS ===================== */
+  #departments { border-top: 1px solid rgba(200,164,77,0.08); }
+
+  .dept-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-bottom: 80px;
+  }
+
+  .dept-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .dept-card {
+    background: var(--bone-faint);
+    border: 1px solid rgba(200,164,77,0.06);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease;
+  }
+
+  .dept-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .dept-card:hover { background: rgba(200,164,77,0.05); }
+  .dept-card:hover::after { transform: scaleX(1); }
+
+  .dept-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .dept-name {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    color: var(--bone);
+    margin-bottom: 6px;
+  }
+
+  .dept-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ash-light);
+    margin-bottom: 20px;
+  }
+
+  .dept-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    line-height: 1.85;
+    color: var(--ash-light);
+    font-weight: 300;
+  }
+
+  .dept-closing {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(200,164,77,0.08);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--gold);
+    line-height: 1.6;
+  }
+
+  /* ===================== PHASES ===================== */
+  #phases { border-top: 1px solid rgba(200,164,77,0.08); }
+
+  .phases-header { text-align: center; margin-bottom: 80px; }
+
+  .phases-timeline {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    position: relative;
+  }
+
+  .phases-timeline::before {
+    content: '';
+    position: absolute;
+    top: 48px;
+    left: 16.6%;
+    right: 16.6%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-dim), var(--gold));
+    opacity: 0.3;
+  }
+
+  .phase-card {
+    padding: 0 48px;
+    border-right: 1px solid rgba(200,164,77,0.08);
+    position: relative;
+  }
+
+  .phase-card:last-child { border-right: none; }
+
+  .phase-num {
+    width: 96px;
+    height: 96px;
+    border: 1px solid rgba(200,164,77,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .phase-num::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(200,164,77,0.12);
+  }
+
+  .phase-num span {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .phase-days {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--ash);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .phase-name {
+    font-family: 'Cinzel', serif;
+    font-size: 24px;
+    color: var(--bone);
+    margin-bottom: 8px;
+  }
+
+  .phase-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+
+  .phase-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--ash-light);
+    font-weight: 300;
+    margin-bottom: 24px;
+  }
+
+  .phase-law {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--bone-dim);
+    border-left: 2px solid var(--gold);
+    padding-left: 16px;
+    line-height: 1.6;
+  }
+
+  /* ===================== ADVANCEMENT ===================== */
+  #advancement { border-top: 1px solid rgba(200,164,77,0.08); }
+
+  .pipeline-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+
+  .pipeline-card {
+    padding: 36px;
+    background: var(--bone-faint);
+    border: 1px solid rgba(200,164,77,0.06);
+    position: relative;
+    transition: all 0.4s ease;
+  }
+
+  .pipeline-card:hover { background: rgba(200,164,77,0.06); }
+
+  .pipeline-rank {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .pipeline-name {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    color: var(--bone);
+    margin-bottom: 6px;
+  }
+
+  .pipeline-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--ash-light);
+    margin-bottom: 16px;
+  }
+
+  .pipeline-law {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    line-height: 1.75;
+    color: var(--ash-light);
+    font-weight: 300;
+  }
+
+  /* ===================== LUNAR ===================== */
+  #lunar { border-top: 1px solid rgba(200,164,77,0.08); }
+
+  .lunar-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: start;
+  }
+
+  .lunar-phases {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 40px;
+  }
+
+  .lunar-phase {
+    padding: 32px;
+    background: var(--bone-faint);
+    border: 1px solid rgba(200,164,77,0.06);
+  }
+
+  .lunar-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+
+  .lunar-phase-name {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .lunar-phase-status {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--bone-dim);
+    margin-bottom: 12px;
+  }
+
+  .lunar-phase-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--ash-light);
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  .zodiac-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 40px;
+  }
+
+  .zodiac-item {
+    padding: 24px 28px;
+    border-left: 2px solid rgba(200,164,77,0.2);
+    background: var(--bone-faint);
+    transition: border-color 0.3s;
+  }
+
+  .zodiac-item:hover { border-color: var(--gold); }
+
+  .zodiac-type {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .zodiac-tone {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--bone);
+    margin-bottom: 6px;
+  }
+
+  .zodiac-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--ash-light);
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  /* ===================== ENFORCEMENT ===================== */
+  #enforcement { border-top: 1px solid rgba(200,164,77,0.08); }
+
+  .enforcement-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .violation-table {
+    margin-top: 40px;
+    border: 1px solid rgba(200,164,77,0.1);
+  }
+
+  .viol-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid rgba(200,164,77,0.06);
+  }
+
+  .viol-row:last-child { border-bottom: none; }
+
+  .viol-row.header { background: rgba(200,164,77,0.06); }
+
+  .viol-cell {
+    padding: 20px 24px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--ash-light);
+    font-weight: 300;
+    border-right: 1px solid rgba(200,164,77,0.06);
+  }
+
+  .viol-cell:last-child { border-right: none; }
+
+  .viol-row.header .viol-cell {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .class-badge {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 1px solid rgba(200,164,77,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: var(--gold);
+  }
+
+  .reset-protocol {
+    margin-top: 40px;
+    background: var(--bone-faint);
+    border: 1px solid rgba(200,164,77,0.12);
+    padding: 40px;
+  }
+
+  .reset-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .reset-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .reset-step {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    color: var(--gold);
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .step-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--bone-dim);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ===================== ACADEMY ===================== */
+  #academy {
+    border-top: 1px solid rgba(200,164,77,0.08);
+    position: relative;
+  }
+
+  .academy-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+  }
+
+  .oath-block {
+    background: linear-gradient(135deg, rgba(200,164,77,0.06) 0%, rgba(11,11,12,0) 100%);
+    border: 1px solid rgba(200,164,77,0.15);
+    padding: 56px;
+    margin-top: 40px;
+    position: relative;
+  }
+
+  .oath-block::before {
+    content: '"';
+    font-family: 'Cinzel', serif;
+    font-size: 120px;
+    color: rgba(200,164,77,0.06);
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    line-height: 1;
+  }
+
+  .oath-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .oath-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .oath-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: var(--bone-dim);
+    line-height: 1.5;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .oath-line::before {
+    content: '—';
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .curriculum-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 40px;
+  }
+
+  .curriculum-item {
+    padding: 24px 0;
+    border-bottom: 1px solid rgba(200,164,77,0.06);
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .curriculum-key {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    flex-shrink: 0;
+    width: 100px;
+    padding-top: 2px;
+  }
+
+  .curriculum-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--ash-light);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* ===================== SEVEN POINTS ===================== */
+  #seven { border-top: 1px solid rgba(200,164,77,0.08); }
+
+  .seven-header { text-align: center; margin-bottom: 80px; }
+
+  .seven-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+
+  .seven-card {
+    padding: 40px 24px;
+    background: var(--bone-faint);
+    border: 1px solid rgba(200,164,77,0.06);
+    text-align: center;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .seven-card:hover {
+    background: rgba(200,164,77,0.06);
+    transform: translateY(-4px);
+  }
+
+  .seven-animal {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+
+  .seven-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--gold);
+    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+  }
+
+  .seven-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--ash-light);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ===================== FINAL MARK ===================== */
+  #final {
+    border-top: 1px solid rgba(200,164,77,0.08);
+    text-align: center;
+    padding: 160px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #final::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 50% 50% at center, rgba(200,164,77,0.05) 0%, transparent 70%);
+  }
+
+  .final-content { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+
+  .final-sigil {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 60px;
+  }
+
+  .final-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 700;
+    color: var(--bone);
+    margin-bottom: 32px;
+    line-height: 1;
+  }
+
+  .final-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-style: italic;
+    color: var(--bone-dim);
+    line-height: 1.8;
+    margin-bottom: 60px;
+  }
+
+  .final-law {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    border-top: 1px solid rgba(200,164,77,0.2);
+    border-bottom: 1px solid rgba(200,164,77,0.2);
+    padding: 24px 0;
+    margin-bottom: 60px;
+  }
+
+  .laws-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    text-align: left;
+    margin-bottom: 60px;
+  }
+
+  .law-item {
+    padding: 24px;
+    background: var(--bone-faint);
+    border: 1px solid rgba(200,164,77,0.08);
+  }
+
+  .law-item h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .law-item p {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--ash-light);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ===================== FOOTER ===================== */
+  footer {
+    border-top: 1px solid rgba(200,164,77,0.1);
+    padding: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .footer-mark {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--ash);
+    text-transform: uppercase;
+  }
+
+  /* ===================== DIVIDERS ===================== */
+  .gold-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.2;
+    margin: 0 auto;
+  }
+
+  /* ===================== REPORTING ===================== */
+  #reporting { border-top: 1px solid rgba(200,164,77,0.08); }
+
+  .reporting-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+  }
+
+  .report-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 40px;
+  }
+
+  .report-item {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(200,164,77,0.06);
+  }
+
+  .report-item-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--bone);
+    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+  }
+
+  .report-item-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--ash-light);
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  /* ===================== ANIMATIONS ===================== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { transform: scaleY(1); opacity: 0.6; }
+    50% { transform: scaleY(0.7); opacity: 0.2; }
+  }
+
+  @keyframes goldPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(200,164,77,0); }
+    50% { box-shadow: 0 0 30px 4px rgba(200,164,77,0.08); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 1100px) {
+    .pillars-grid, .seven-grid { grid-template-columns: repeat(2, 1fr); }
+    .dept-grid { grid-template-columns: repeat(2, 1fr); }
+    .pipeline-grid { grid-template-columns: repeat(2, 1fr); }
+    .phases-timeline { grid-template-columns: 1fr; }
+    .phases-timeline::before { display: none; }
+    .phase-card { border-right: none; border-bottom: 1px solid rgba(200,164,77,0.08); padding: 48px 0; }
+    .command-layout, .mission-grid, .lunar-layout, .enforcement-layout, .academy-layout, .dept-header, .reporting-layout { grid-template-columns: 1fr; gap: 60px; }
+    nav { padding: 24px 30px; }
+    section { padding: 80px 30px; }
+    footer { padding: 40px 30px; flex-direction: column; gap: 20px; text-align: center; }
+  }
+
+  @media (max-width: 600px) {
+    .pillars-grid, .seven-grid, .dept-grid, .pipeline-grid { grid-template-columns: 1fr; }
+    .laws-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Navigation -->
+<nav>
+  <a href="#hero" class="nav-logo">ORI'KA</a>
+  <ul class="nav-links">
+    <li><a href="#mission">Mission</a></li>
+    <li><a href="#pillars">Pillars</a></li>
+    <li><a href="#departments">Horizon</a></li>
+    <li><a href="#phases">Phases</a></li>
+    <li><a href="#academy">Academy</a></li>
+    <li><a href="#final">The Mark</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<div id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+
+  <div class="hero-content">
+    <div class="hero-sigil">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#C8A44D" stroke-width="1" opacity="0.6"/>
+        <circle cx="50" cy="50" r="36" fill="none" stroke="#C8A44D" stroke-width="0.5" opacity="0.3"/>
+        <circle cx="50" cy="50" r="4" fill="#C8A44D" opacity="0.8"/>
+        <line x1="50" y1="4" x2="50" y2="20" stroke="#C8A44D" stroke-width="1" opacity="0.6"/>
+        <line x1="50" y1="80" x2="50" y2="96" stroke="#C8A44D" stroke-width="1" opacity="0.6"/>
+        <line x1="4" y1="50" x2="20" y2="50" stroke="#C8A44D" stroke-width="1" opacity="0.6"/>
+        <line x1="80" y1="50" x2="96" y2="50" stroke="#C8A44D" stroke-width="1" opacity="0.6"/>
+        <line x1="17" y1="17" x2="29" y2="29" stroke="#C8A44D" stroke-width="0.7" opacity="0.4"/>
+        <line x1="71" y1="71" x2="83" y2="83" stroke="#C8A44D" stroke-width="0.7" opacity="0.4"/>
+        <line x1="83" y1="17" x2="71" y2="29" stroke="#C8A44D" stroke-width="0.7" opacity="0.4"/>
+        <line x1="17" y1="83" x2="29" y2="71" stroke="#C8A44D" stroke-width="0.7" opacity="0.4"/>
+        <text x="50" y="57" text-anchor="middle" font-family="serif" font-size="22" fill="#C8A44D" opacity="0.9" font-weight="bold">O</text>
+      </svg>
+    </div>
+
+    <div class="hero-eyebrow">Phase I — The Architecture</div>
+
+    <h1 class="hero-title">Ori<span>'</span>ka</h1>
+
+    <p class="hero-subtitle">Systemic Sovereignty. The systematic structuring of the individual through rhythm, objective output, and disciplined peace. From the Ground Up — Ownership. Power. Peace.</p>
+
+    <a href="#mission" class="hero-cta">Enter the System</a>
+  </div>
+
+  <div class="scroll-indicator">
+    <span>Descend</span>
+    <div class="scroll-line"></div>
+  </div>
+</div>
+
+<!-- Mission -->
+<section id="mission">
+  <div class="mission-grid">
+    <div class="reveal">
+      <div class="section-label">The Mandate</div>
+      <h2 class="section-title">Mission<br>Statement</h2>
+      <p class="section-body">Ori'ka is a functional architecture for the transition from survival to sovereignty. The mission is the restoration of operational mastery — utilizing the intelligence inherent in our lineage to engineer modern systems of ownership, clarity, and consolidated power.</p>
+
+      <div style="margin-top: 40px; padding: 32px; border: 1px solid rgba(200,164,77,0.15); background: var(--bone-faint);">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 17px; font-style: italic; color: var(--gold); line-height: 1.7;">We do not discuss resilience. We engineered it — layer by layer, code by code. This is the science of becoming whole. Rooted in heritage. Engineered for elevation.</p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="mission-items">
+        <div class="mission-item">
+          <div class="mission-num">I</div>
+          <div class="mission-text">
+            <h4>Foundational Security</h4>
+            <p>Through disciplined action, we secure the base requirements: tactical shelter, biological fuel, and psychological stability.</p>
+          </div>
+        </div>
+        <div class="mission-item">
+          <div class="mission-num">II</div>
+          <div class="mission-text">
+            <h4>Intellectual Governance</h4>
+            <p>Through creative ownership, the mind is deployed as the primary engine of wealth. Raw skill is converted into self-governance and economic independence.</p>
+          </div>
+        </div>
+        <div class="mission-item">
+          <div class="mission-num">III</div>
+          <div class="mission-text">
+            <h4>Collective Accountability</h4>
+            <p>Through community clarity, we maintain a structure of absolute accountability. Wisdom and discipline are the mechanisms for sustainable peace.</p>
+          </div>
+        </div>
+        <div class="mission-item">
+          <div class="mission-num">IV</div>
+          <div class="mission-text">
+            <h4>Energy Management</h4>
+            <p>Ori'ka dictates the command of internal and external energy. It provides the protocol for clarity during chaos and preparation prior to pressure. Every movement must be calculated.</p>
+          </div>
+        </div>
+        <div class="mission-item">
+          <div class="mission-num">V</div>
+          <div class="mission-text">
+            <h4>The Entry Point</h4>
+            <p>The system is absolute. Regardless of a practitioner's point of origin, the rhythm provides the path to elevation. Alignment is achieved through step-by-step adherence to the code.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pillars -->
+<section id="pillars" style="padding: 120px 60px; max-width: 1400px; margin: 0 auto;">
+  <div class="pillars-header reveal">
+    <div class="section-label" style="justify-content: center;">Constitutional Foundation</div>
+    <h2 class="section-title">The Four Pillars</h2>
+    <p class="section-body" style="max-width: 600px; margin: 0 auto;">The Four Pillars serve as the constitutional basis for all authority within Ori'ka. Every motion, every decision, every escalation is grounded in these laws.</p>
+  </div>
+
+  <div class="pillars-grid reveal">
+    <div class="pillar-card">
+      <div class="pillar-roman">I</div>
+      <div class="pillar-name">Jam'ka</div>
+      <div class="pillar-title">Order Precedes Motion</div>
+      <p class="pillar-desc">Motion without preparation is waste. The field must be neutralized before engagement. The mind must be cleared before speech. The breath must be synchronized before making a decision. Movement is prohibited until the environment reflects the objective. A compromised environment results in a compromised path.</p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-roman">II</div>
+      <div class="pillar-name">Kal'ru</div>
+      <div class="pillar-title">Discipline Over State</div>
+      <p class="pillar-desc">Internal emotional states are irrelevant to operational requirements. A practitioner governed by mood is a liability to the system. Execution is independent of internal inclination. Standards are absolute regardless of external observation. Discipline is not an emotional state; it is an architectural necessity.</p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-roman">III</div>
+      <div class="pillar-name">Mal'nior</div>
+      <div class="pillar-title">Alignment Before Expansion</div>
+      <p class="pillar-desc">Expansion absent alignment is structural failure. Ori'ka dictates strict adherence to internal biological rhythms, lunar and seasonal cycles, and energetic windows of opportunity. Growth outside of the appropriate season is unsustainable. Expansion prior to foundational alignment is self-terminating.</p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-roman">IV</div>
+      <div class="pillar-name">Rin'gar</div>
+      <div class="pillar-title">Position Over Reaction</div>
+      <p class="pillar-desc">Reaction is the indicator of an unprepared state. Strategic positioning eliminates the necessity for panic. The system dictates that we do not react — we pre-position. Train to eliminate hesitation. Plan to eliminate frantic movement. Execute to eliminate fear. Superior positioning ensures primary command.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Command Layer -->
+<section id="command">
+  <div class="section-label reveal">Structural Authority</div>
+  <h2 class="section-title reveal">Command Layer</h2>
+
+  <div class="command-layout">
+    <div>
+      <p class="section-body reveal" style="margin-bottom: 0;">The Command Authority Matrix governs all decision-making, escalation, and structural integrity within Ori'ka. Authority is not granted by personality — it is verified through record.</p>
+
+      <div class="command-roles reveal">
+        <div class="role-item">
+          <div class="role-level">Level IV — Supreme Command</div>
+          <div class="role-name">Rag'nal</div>
+          <div class="role-desc">Final determination of direction, mission architecture, and structural integrity. Non-override clause in effect: all final determinations reside with Rag'nal. Engagement required only for systemic correction or primary directive shifts.</div>
+        </div>
+        <div class="role-item">
+          <div class="role-level">Level III — Operational Oversight</div>
+          <div class="role-name">Essence</div>
+          <div class="role-desc">Management of daily cycles, emergency authorization, log maintenance, and system flow. Prohibited from altering long-term strategy or overriding Strategic Command directives.</div>
+        </div>
+        <div class="role-item">
+          <div class="role-level">Level II — Jurisdictional Execution</div>
+          <div class="role-name">Lead Inspector</div>
+          <div class="role-desc">Mission execution, assignment closure, and objective reporting. Prohibited from mission creation, scope alteration, or jurisdictional trespass. Total accountability for outcomes.</div>
+        </div>
+        <div class="role-item">
+          <div class="role-level">Level I — Developmental Execution</div>
+          <div class="role-name">Junior Lead Inspector</div>
+          <div class="role-desc">Execution of assigned tasks and development of competency within controlled environments. Participation in mission support under direct Lead Inspector oversight.</div>
+        </div>
+        <div class="role-item">
+          <div class="role-level">Advisory — Internal Audit</div>
+          <div class="role-name">Ny'kage</div>
+          <div class="role-desc">Strategic insight and audit. Weekly audits of behavioral patterns, emotional variances, and recurring breakdowns. Advisory body only — no command or operational authority. Insight without execution is discarded.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="command-detail reveal">
+      <div class="command-matrix">
+        <div class="matrix-title">Decision Protocol Matrix</div>
+        <table class="matrix-table">
+          <tr>
+            <th>Decision Type</th>
+            <th>Initiation</th>
+            <th>Approval</th>
+          </tr>
+          <tr>
+            <td>Primary Mission</td>
+            <td>Rag'nal</td>
+            <td><span class="badge">Rag'nal</span></td>
+          </tr>
+          <tr>
+            <td>Emergency Protocol</td>
+            <td>Rag'nal & Essence</td>
+            <td><span class="badge">Joint</span></td>
+          </tr>
+          <tr>
+            <td>Prospect Integration</td>
+            <td>Essence</td>
+            <td><span class="badge">Both</span></td>
+          </tr>
+          <tr>
+            <td>Elevation / Promotion</td>
+            <td>Council</td>
+            <td><span class="badge">Both</span></td>
+          </tr>
+          <tr>
+            <td>Disciplinary Action</td>
+            <td>Council</td>
+            <td><span class="badge">Both</span></td>
+          </tr>
+          <tr>
+            <td>Curriculum Revision</td>
+            <td>Council</td>
+            <td><span class="badge">Both</span></td>
+          </tr>
+          <tr>
+            <td>Structural Adjustment</td>
+            <td>Rag'nal & Essence</td>
+            <td><span class="badge">Rag'nal</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <div style="margin-top: 24px; padding: 32px; border: 1px solid rgba(200,164,77,0.1); background: var(--bone-faint);">
+        <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em; color: var(--gold); margin-bottom: 20px; text-transform: uppercase;">4-Level Escalation Doctrine</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; gap: 16px; align-items: flex-start;">
+            <div style="font-family: 'Cinzel', serif; font-size: 10px; color: var(--gold); flex-shrink: 0;">L1</div>
+            <div style="font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ash-light); font-weight: 300;">Lead Inspector — Minor operational variances; internal corrections.</div>
+          </div>
+          <div style="display: flex; gap: 16px; align-items: flex-start;">
+            <div style="font-family: 'Cinzel', serif; font-size: 10px; color: var(--gold); flex-shrink: 0;">L2</div>
+            <div style="font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ash-light); font-weight: 300;">Essence — Structural breakdowns; cross-department friction; emergency deployment.</div>
+          </div>
+          <div style="display: flex; gap: 16px; align-items: flex-start;">
+            <div style="font-family: 'Cinzel', serif; font-size: 10px; color: var(--gold); flex-shrink: 0;">L3</div>
+            <div style="font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ash-light); font-weight: 300;">Council Review — Systemic failures; security breaches; ethical violations.</div>
+          </div>
+          <div style="display: flex; gap: 16px; align-items: flex-start;">
+            <div style="font-family: 'Cinzel', serif; font-size: 10px; color: var(--gold); flex-shrink: 0;">L4</div>
+            <div style="font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ash-light); font-weight: 300;">Rag'nal — Final judgment; structural reconfiguration; removal or elevation.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Departments -->
+<section id="departments">
+  <div class="dept-header">
+    <div class="reveal">
+      <div class="section-label">The Horizon</div>
+      <h2 class="section-title">Department Layer</h2>
+    </div>
+    <div class="reveal">
+      <p class="section-body">Seven departments govern the full spectrum of the practitioner's operational reality. Each jurisdiction is distinct, non-overlapping, and governed by its own closing law. The Horizon is complete only when all seven are active.</p>
+    </div>
+  </div>
+
+  <div class="dept-grid reveal">
+    <div class="dept-card">
+      <div class="dept-tag">Dept I — Individual vs. Collective Systems</div>
+      <div class="dept-name">Ri'ra Rin-Sir</div>
+      <div class="dept-sub">Handling</div>
+      <p class="dept-desc">Manages the interface between the practitioner and external systemic variables. Dictates the navigation of social, institutional, and economic pressures. Primary jurisdictions include systemic variables, environmental constraints, psychological load, social expectations, economic dependencies, and strategic navigation. The objective is navigation, not activism — we do not reform external systems; we optimize the individual to operate within and beyond them.</p>
+      <div class="dept-closing">Ri'ra Rin-Sir is a department of clarity, not a complaint. The external environment is acknowledged as a variable, but never accepted as an excuse.</div>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-tag">Dept II — Individual vs. Individual</div>
+      <div class="dept-name">Jal'tar Rus-Ka</div>
+      <div class="dept-sub">Operations</div>
+      <p class="dept-desc">Manages the Field — the domain of interpersonal engagement. Dictates the management of power dynamics, social positioning, and the resolution of friction between individuals. Covers interpersonal conflict, power dynamics, perceptual friction, identity-based tension, social positioning, interactional triggers, and strategic engagement. Authority is limited to the refinement of the practitioner's response and positioning.</p>
+      <div class="dept-closing">Power is quiet, measured, and undeniable. Every engagement is a diagnostic test of control and position.</div>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-tag">Dept III — Individual vs. Nature</div>
+      <div class="dept-name">Mal'sul Nur-O</div>
+      <div class="dept-sub">Response</div>
+      <p class="dept-desc">Manages the interface between the practitioner and the biophysical world. Dictates the management of environmental variables, biological sustainability, and adaptation to physical constraints. Covers environmental variables, resource logistics, biophysical constraints, energy management, natural interfacing, and adaptation protocol. Biological reality overrides cultural preference.</p>
+      <div class="dept-closing">The law is binary: adaptation or decline. This department ensures that survival is never mistaken for control.</div>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-tag">Dept IV — Individual vs. Self</div>
+      <div class="dept-name">Sak'ra Jan</div>
+      <div class="dept-sub">Intelligence</div>
+      <p class="dept-desc">Manages the internal security of the practitioner. Dictates the detection of internal subversion, the enforcement of discipline, and the protection of operational integrity from emotional and cognitive interference. Covers internal security, cognitive governance, identity stability, operational psychology, habit architecture, value alignment, and subversion detection.</p>
+      <div class="dept-closing">No architecture can preserve a practitioner who refuses internal command, and no force can stop one who has achieved it.</div>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-tag">Dept V — Individual vs. Technology</div>
+      <div class="dept-name">Gar'ka Sir-Rag</div>
+      <div class="dept-sub">Zero-Trust</div>
+      <p class="dept-desc">Manages the interface between the practitioner and digital architectures. Dictates the navigation of algorithmic systems, the management of digital identity, and the mitigation of technological bias and surveillance. Covers digital interface management, algorithmic navigation, identity architecture, data security, bias analysis, and technological leverage.</p>
+      <div class="dept-closing">The algorithm is not an arbiter of fairness; it is a variable to be managed. We do not disconnect; we calibrate.</div>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-tag">Dept VI — Individual vs. The Unknown</div>
+      <div class="dept-name">Aus'lun Mar-Rum</div>
+      <div class="dept-sub">Observation</div>
+      <p class="dept-desc">Manages the interface between the practitioner and unverified or emerging data sets. Dictates the exploration of historical voids, the neutralization of uncertainty-based hesitation, and the systematic interpretation of abstract phenomena. Covers uncertainty management, data recovery, psychological reconnaissance, phenomenological interpretation, and shadow analysis.</p>
+      <div class="dept-closing">The unknown is a variable to be structured, not a force to be feared. We move, observe, and refine until the unknown is rendered usable.</div>
+    </div>
+
+    <div class="dept-card">
+      <div class="dept-tag">Dept VII — Individual vs. Fate</div>
+      <div class="dept-name">Tau'ru Nal-Gar</div>
+      <div class="dept-sub">Nexus</div>
+      <p class="dept-desc">Manages the intersection of the practitioner's existential framework and their operational reality. Dictates the calibration of belief systems, the interpretation of causality, and the alignment of perceived purpose with systemic action. Covers existential calibration, value synthesis, causality interpretation, volition management, identity integration, and teleological responsibility.</p>
+      <div class="dept-closing">You are prohibited from using destiny as a shield. Action must exist in total alignment with belief. Faith absent alignment is a systemic illusion.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Reporting Layer -->
+<section id="reporting">
+  <div class="reporting-layout">
+    <div class="reveal">
+      <div class="section-label">Operational Intelligence</div>
+      <h2 class="section-title">The Reporting Layer</h2>
+      <p class="section-body">Every jurisdiction is required to submit a verified Intelligence Package at the conclusion of each seven-day cycle. Failure to submit constitutes a cessation of participation.</p>
+
+      <div style="margin-top: 40px; padding: 32px 36px; background: var(--bone-faint); border: 1px solid rgba(200,164,77,0.12);">
+        <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em; color: var(--gold); margin-bottom: 20px; text-transform: uppercase;">Closing Law of Reporting</div>
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 17px; font-style: italic; color: var(--bone-dim); line-height: 1.7;">No action exists without a record. If it is not logged, it cannot be defended, repeated, or trusted.</p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="report-items">
+        <div class="report-item">
+          <div class="report-item-title">Departmental Intelligence Report</div>
+          <div class="report-item-desc">Lead Inspector requirement. Jurisdictional overview, variable identification, performance audit, and pattern detection. Submitted for every department at cycle's end.</div>
+        </div>
+        <div class="report-item">
+          <div class="report-item-title">Individual Operational Logs</div>
+          <div class="report-item-desc">Practitioner requirement. Systemic Variable Logs, Interpersonal Friction Logs, Biophysical Logs, Internal Discipline Logs, Digital Architecture Logs, Unknown Reconnaissance Logs, Existential Alignment Logs.</div>
+        </div>
+        <div class="report-item">
+          <div class="report-item-title">Identified Vulnerability Pattern</div>
+          <div class="report-item-desc">Primary failure isolation, root cause analysis, and risk assessment. Definitions must be derived from log data; subjective opinion is prohibited.</div>
+        </div>
+        <div class="report-item">
+          <div class="report-item-title">Correction Protocol</div>
+          <div class="report-item-desc">Prescribed behavioral adjustment, enforcement jurisdiction, minimum one-cycle (7-day) implementation, and a measurable metric. Immeasurable strategies are rejected.</div>
+        </div>
+        <div class="report-item">
+          <div class="report-item-title">Standardized Operational Forms</div>
+          <div class="report-item-desc">Intake/Assignment Protocol, Incident/Breach Report, Mission Briefing, After-Action Report (AAR), Jurisdictional Status Report, Trainee Performance Ledger, Correction Record, Elevation Review.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Enforcement -->
+<section id="enforcement">
+  <div class="enforcement-layout">
+    <div class="reveal">
+      <div class="section-label">Systemic Integrity</div>
+      <h2 class="section-title">The Enforcement Layer</h2>
+      <p class="section-body">Consequences are determined by the classification of the breach, not by the temperament of the authority. The system does not run on belief — it runs on proof.</p>
+
+      <div class="violation-table reveal" style="margin-top: 40px;">
+        <div class="viol-row header">
+          <div class="viol-cell">Class</div>
+          <div class="viol-cell">Definition</div>
+          <div class="viol-cell">Response</div>
+        </div>
+        <div class="viol-row">
+          <div class="viol-cell"><div class="class-badge">I</div></div>
+          <div class="viol-cell">Isolated failure; low impact.</div>
+          <div class="viol-cell">Immediate correction; documented warning.</div>
+        </div>
+        <div class="viol-row">
+          <div class="viol-cell"><div class="class-badge">II</div></div>
+          <div class="viol-cell">Pattern formation; workflow impact.</div>
+          <div class="viol-cell">Formal Correction Protocol; mandatory tracking.</div>
+        </div>
+        <div class="viol-row">
+          <div class="viol-cell"><div class="class-badge">III</div></div>
+          <div class="viol-cell">Significant mission/integrity failure.</div>
+          <div class="viol-cell">Escalation to Essence; role restriction.</div>
+        </div>
+        <div class="viol-row">
+          <div class="viol-cell"><div class="class-badge">IV</div></div>
+          <div class="viol-cell">Severe breach; threat to trust/structure.</div>
+          <div class="viol-cell">Council Review; immediate removal consideration.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="reset-protocol">
+        <div class="reset-title">Immediate Post-Event Protocol — Personal Reset</div>
+        <div class="reset-steps">
+          <div class="reset-step">
+            <div class="step-num">01</div>
+            <div class="step-text"><strong>Kinetic De-escalation</strong> — Remove footwear.</div>
+          </div>
+          <div class="reset-step">
+            <div class="step-num">02</div>
+            <div class="step-text"><strong>Sanitization</strong> — Wash hands (symbolic and physical reset).</div>
+          </div>
+          <div class="reset-step">
+            <div class="step-num">03</div>
+            <div class="step-text"><strong>Space Alignment</strong> — Reset immediate environment to Order.</div>
+          </div>
+          <div class="reset-step">
+            <div class="step-num">04</div>
+            <div class="step-text"><strong>Hydration</strong> — Immediate intake of water.</div>
+          </div>
+          <div class="reset-step">
+            <div class="step-num">05</div>
+            <div class="step-text"><strong>Regulated Fuel</strong> — Consumption of a controlled, non-reactive meal.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; padding: 32px; border: 1px solid rgba(200,164,77,0.1); background: var(--bone-faint);">
+        <div style="font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em; color: var(--gold); margin-bottom: 16px; text-transform: uppercase;">Evidence Standard</div>
+        <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ash-light); line-height: 1.8; font-weight: 300;">Valid proof must be <em>objective</em> — derived from logs and records, not memory. <em>Traceable</em> — time-stamped and verifiable. <em>Unsentimental</em> — intent and explanation are rejected. Only output is judged.</p>
+        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(200,164,77,0.08);">
+          <p style="font-family: 'Cormorant Garamond', serif; font-size: 16px; font-style: italic; color: var(--gold);">Closing Law: The system does not run on belief. It runs on proof. Evidence defines reality. Reality determines action.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Advancement / Pipeline -->
+<section id="advancement">
+  <div class="reveal">
+    <div class="section-label">Authority & Progression</div>
+    <h2 class="section-title">The Advancement Layer</h2>
+    <p class="section-body" style="max-width: 720px;">Promotion within the Ori'ka architecture is the formal recognition of sustained alignment and verified accountability. It is a vertical shift in rank that requires a corresponding increase in systemic responsibility. Promotion is not a reward; it is a transfer of responsibility.</p>
+  </div>
+
+  <div class="pipeline-grid reveal">
+    <div class="pipeline-card">
+      <div class="pipeline-rank">Rank I — Pre-Initiation</div>
+      <div class="pipeline-name">Prospect</div>
+      <div class="pipeline-sub">Observer Status</div>
+      <div class="pipeline-law">Exists outside the architecture. Undergoing passive surveillance for baseline compatibility. Restricted to observation and supervised inquiry. A Prospect is standing at the gate — posture without position results in removal without discussion.</div>
+    </div>
+    <div class="pipeline-card">
+      <div class="pipeline-rank">Rank II — Initiation</div>
+      <div class="pipeline-name">Recruit</div>
+      <div class="pipeline-sub">Baseline Discipline</div>
+      <div class="pipeline-law">A test of Repetition. Authority limited to self-management and execution of basic routines. Minimum 14 days of verified consecutive logs; zero falsified data. This level does not reward effort — it measures truth through action.</div>
+    </div>
+    <div class="pipeline-card">
+      <div class="pipeline-rank">Rank III — Early Pressurization</div>
+      <div class="pipeline-name">Initiate</div>
+      <div class="pipeline-sub">Structural Integration</div>
+      <div class="pipeline-law">No longer learning the structure — living within it. Independent execution of the AB schedule and basic household order. Application of structure only; no authority to direct others. Structure is not a suggestion; it is the standard.</div>
+    </div>
+    <div class="pipeline-card">
+      <div class="pipeline-rank">Rank IV — Pre-Field Readiness</div>
+      <div class="pipeline-name">Pawn</div>
+      <div class="pipeline-sub">Transitional Operator</div>
+      <div class="pipeline-law">The Critical Filter. Independent management of daily structure; execution of missions with limited oversight. Zero behavioral breakdowns. If structure collapses without supervision, the asset is discarded.</div>
+    </div>
+    <div class="pipeline-card">
+      <div class="pipeline-rank">Rank V — Operational Development</div>
+      <div class="pipeline-name">Junior Inspector</div>
+      <div class="pipeline-sub">Apprentice Authority</div>
+      <div class="pipeline-law">Building competency through directed execution. Execution of assigned field tasks; generation of weekly output audits. Absolute accountability for assigned responsibilities; immediate application of correction.</div>
+    </div>
+    <div class="pipeline-card">
+      <div class="pipeline-rank">Rank VI — Execution Layer</div>
+      <div class="pipeline-name">Lead Inspector</div>
+      <div class="pipeline-sub">Operational Command</div>
+      <div class="pipeline-law">The line between structure and collapse. Jurisdictional oversight; validation of logs; issuance of Level 1 corrections. Responsibility is not shared — it is held. If standards drop, the Lead Inspector is the point of failure.</div>
+    </div>
+    <div class="pipeline-card">
+      <div class="pipeline-rank">Rank VII — Pre-Command</div>
+      <div class="pipeline-name">Totem Commissioner</div>
+      <div class="pipeline-sub">Successor Track</div>
+      <div class="pipeline-law">A test of Weight-Bearing Capacity. Multi-departmental coordination; advisory input on system performance. Stability under high-level ambiguity. Many can execute; few can govern.</div>
+    </div>
+    <div class="pipeline-card">
+      <div class="pipeline-rank">Rank VIII — Stability & Flow</div>
+      <div class="pipeline-name">Essence</div>
+      <div class="pipeline-sub">Operational Core</div>
+      <div class="pipeline-law">The System Stabilizer. Approval of emergency actions; validation of promotions; cross-departmental conflict resolution. If Essence weakens, the system becomes inconsistent. If Essence remains sharp, the system is perpetual.</div>
+    </div>
+    <div class="pipeline-card">
+      <div class="pipeline-rank">Rank IX — Structural Authority</div>
+      <div class="pipeline-name">Rag'nal</div>
+      <div class="pipeline-sub">Supreme Command</div>
+      <div class="pipeline-law">Defines the system. Governs direction, not daily movement. Authority at this level is not control — it is responsibility without excuse. Nothing sits above this role. Everything answers to it.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Phases -->
+<section id="phases">
+  <div class="phases-header reveal">
+    <div class="section-label" style="justify-content: center;">Sequential Verification</div>
+    <h2 class="section-title">The Phase Architecture</h2>
+    <p class="section-body" style="max-width: 600px; margin: 0 auto;">The 75-day cycle applies controlled pressure across three sequential phases. Each phase answers a distinct question. No phase may be skipped, and no element may be optimized before it has been proven stable.</p>
+  </div>
+
+  <div class="phases-timeline reveal">
+    <div class="phase-card">
+      <div class="phase-num"><span>I</span></div>
+      <div class="phase-days">Days 01 — 25</div>
+      <div class="phase-name">Acclimation</div>
+      <div class="phase-subtitle">Compliance Phase — System Entry & Stabilization</div>
+      <p class="phase-desc">Establishes a singular truth: Can the practitioner follow the architecture exactly as designed? Objective: elimination of optimization. Total compliance and stabilization of behavior under rigid structure. Any attempt at "personalization" or schedule modification is classified as non-compliance and results in an immediate reset.</p>
+      <div class="phase-law">If you cannot follow structure, you cannot build. Those who pass do not talk about change; they have already begun it.</div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-num"><span>II</span></div>
+      <div class="phase-days">Days 26 — 50</div>
+      <div class="phase-name">Resistance</div>
+      <div class="phase-subtitle">Stress Phase — Failure Identification & Correction</div>
+      <p class="phase-desc">Identifies what breaks when controlled pressure is applied. The forensic analysis of instability. Pressure introduced through increased workload density, time constraints, and systematic reduction of external reminders. Every missed action and emotional reaction must be recorded. Concealment of failure is a terminal breach.</p>
+      <div class="phase-law">Pressure does not create weakness. It reveals it. If you break and correct it, you become stable.</div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-num"><span>III</span></div>
+      <div class="phase-days">Days 51 — 75</div>
+      <div class="phase-name">Refinement</div>
+      <div class="phase-subtitle">Optimization Phase — Verified Stability Upgrade</div>
+      <p class="phase-desc">Answers the question: What is stable enough to be improved? This phase does not fix weakness; it advances strength. No element may be optimized unless it has survived Phase II without a breakdown pattern. One variable is adjusted at a time. If instability appears, the system reverts to Phase II baseline.</p>
+      <div class="phase-law">Refinement is not creativity; it is precision applied to proven systems. If you refine too early, you destroy what was not stable.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Lunar -->
+<section id="lunar">
+  <div class="lunar-layout">
+    <div class="reveal">
+      <div class="section-label">The Celestial Clock</div>
+      <h2 class="section-title">Lunar Operational Calibration</h2>
+      <p class="section-body">In Ori'ka, we do not worship the Moon; we use its phases to calibrate Output Density and Internal Maintenance. The lunar cycle is the system's heartbeat — it does not control the builder; it defines the resistance of the environment.</p>
+
+      <div class="lunar-phases">
+        <div class="lunar-phase">
+          <div class="lunar-icon">🌑</div>
+          <div class="lunar-phase-name">New Moon</div>
+          <div class="lunar-phase-status">Reset / Cleansing</div>
+          <div class="lunar-phase-desc">Resetting of logs; purging of inefficient habits; internal auditing.</div>
+        </div>
+        <div class="lunar-phase">
+          <div class="lunar-icon">🌒</div>
+          <div class="lunar-phase-name">Waxing Moon</div>
+          <div class="lunar-phase-status">Build / Expansion</div>
+          <div class="lunar-phase-desc">Implementation of Refinement (Phase III); increasing workload density; growth.</div>
+        </div>
+        <div class="lunar-phase">
+          <div class="lunar-icon">🌕</div>
+          <div class="lunar-phase-name">Full Moon</div>
+          <div class="lunar-phase-status">Peak / Execution</div>
+          <div class="lunar-phase-desc">Mission closure; high-visibility performance; peak output verification.</div>
+        </div>
+        <div class="lunar-phase">
+          <div class="lunar-icon">🌘</div>
+          <div class="lunar-phase-name">Waning Moon</div>
+          <div class="lunar-phase-status">Recovery / Audit</div>
+          <div class="lunar-phase-desc">Expelling systemic negativity; repairing breaks; preparing for the next reset.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div style="margin-bottom: 24px; font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase;">Zodiacal Transit Modifiers</div>
+      <div class="zodiac-grid">
+        <div class="zodiac-item">
+          <div class="zodiac-type">🔥 Fire Transits — Aries, Leo, Sagittarius</div>
+          <div class="zodiac-tone">High Velocity / High Aggression</div>
+          <div class="zodiac-desc">Shift focus to Rin'gar (Positioning) and Ra'garun (Physical Dominion). Risk: Overconfidence. Correction: Mandatory grounding logs to ensure action remains precise, not performative.</div>
+        </div>
+        <div class="zodiac-item">
+          <div class="zodiac-type">🌍 Earth Transits — Taurus, Virgo, Capricorn</div>
+          <div class="zodiac-tone">Stability / Structural Analysis</div>
+          <div class="zodiac-desc">High-density auditing and Sak'ra Jan (Intelligence) reports. Risk: Slowness or apathy. Correction: Scheduled kinetic resets to prevent structural stagnation.</div>
+        </div>
+        <div class="zodiac-item">
+          <div class="zodiac-type">💨 Air Transits — Gemini, Libra, Aquarius</div>
+          <div class="zodiac-tone">Communication / Systems Flow</div>
+          <div class="zodiac-desc">Review of Gar'ka Sir-Rag and coordination between departments. Risk: Decision-making paralysis. Correction: Enforce Order Before Motion. If drift occurs, revert to the baseline checklist.</div>
+        </div>
+        <div class="zodiac-item">
+          <div class="zodiac-type">🌊 Water Transits — Cancer, Scorpio, Pisces</div>
+          <div class="zodiac-tone">Depth / Internal Resonance</div>
+          <div class="zodiac-desc">Tau'ru Nal-Gar (Nexus) evaluations and Aus'lun Mar-Rum (Observation). Risk: Emotional volatility. Correction: Strict adherence to Discipline Over Mood. Emotional reactivity is classified as a breach.</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; padding: 28px; border: 1px solid rgba(200,164,77,0.12); background: var(--bone-faint);">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 17px; font-style: italic; color: var(--bone-dim); line-height: 1.7;">The Moon provides the timing; Ori'ka provides the control. You do not wait for the Moon to change your mood. You observe the Moon to anticipate the friction. The cycle is fixed. Your alignment is the only variable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Academy -->
+<section id="academy">
+  <div class="section-label reveal">The Charter of Installation</div>
+  <h2 class="section-title reveal">Omnira Horizon Academy</h2>
+
+  <div class="academy-layout">
+    <div class="reveal">
+      <p class="section-body">An initiation-and-build institution engineered to produce disciplined, competent, ethical builders — assets capable of autonomous governance under high-velocity pressure. It serves as the primary operational on-ramp into Ori'ka. The Academy does not offer rescue; it installs methods.</p>
+
+      <div class="curriculum-grid">
+        <div class="curriculum-item">
+          <div class="curriculum-key">JAM'KA</div>
+          <div class="curriculum-desc">Order Before Motion — Sequential Planning. The first faculty. Before any motion is sanctioned, the environment must reflect the objective.</div>
+        </div>
+        <div class="curriculum-item">
+          <div class="curriculum-key">KAL'RU</div>
+          <div class="curriculum-desc">Consistency Under Pressure — Endurance. Standards are maintained regardless of external observation or internal emotional state.</div>
+        </div>
+        <div class="curriculum-item">
+          <div class="curriculum-key">KRU'THAL</div>
+          <div class="curriculum-desc">Foundational Integration — Theological Alignment. Management of the known; the established body of doctrine and validated knowledge.</div>
+        </div>
+        <div class="curriculum-item">
+          <div class="curriculum-key">MAL'NIOR</div>
+          <div class="curriculum-desc">Alignment Before Expansion — Structural Integrity. Growth is only authorized after internal alignment has been verified and sustained.</div>
+        </div>
+        <div class="curriculum-item">
+          <div class="curriculum-key">RA'GARUN</div>
+          <div class="curriculum-desc">Physical Dominion — Biophysical Mastery. The body trained as a vessel of discipline; not maintained by nature, but governed by will.</div>
+        </div>
+        <div class="curriculum-item">
+          <div class="curriculum-key">RIN'GAR</div>
+          <div class="curriculum-desc">Position Over Reaction — Tactical Stance. Strategic positioning that eliminates the need for panic or defensive movement.</div>
+        </div>
+        <div class="curriculum-item">
+          <div class="curriculum-key">SAKI'RAI</div>
+          <div class="curriculum-desc">Silent Authority Protocol — Discreet Governance. Power exercised without performance; authority that is felt, not announced.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="oath-block">
+        <div class="oath-title">The Oath of Practice</div>
+        <div class="oath-lines">
+          <div class="oath-line">I will not ask for rescue.</div>
+          <div class="oath-line">I will build a procedure under pressure.</div>
+          <div class="oath-line">I will keep order before motion.</div>
+          <div class="oath-line">I will train my body as a vessel of discipline.</div>
+          <div class="oath-line">I will serve without performance.</div>
+          <div class="oath-line">I will record the truth and submit it to an audit.</div>
+          <div class="oath-line">I will not trade my agency for someone else's certainty.</div>
+          <div class="oath-line">I will reject grift, worship, and manipulation.</div>
+          <div class="oath-line">I will protect the dignity of others through clean conduct.</div>
+          <div class="oath-line">I will become a builder — useful in storms.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Seven Points -->
+<section id="seven">
+  <div class="seven-header reveal">
+    <div class="section-label" style="justify-content: center;">Instructional Archetypes</div>
+    <h2 class="section-title">The Seven Points of Pressure</h2>
+    <p class="section-body" style="max-width: 600px; margin: 0 auto;">The seven forces are not symbolic metaphors; they are precise instructional protocols for environmental navigation.</p>
+  </div>
+
+  <div class="seven-grid reveal">
+    <div class="seven-card">
+      <div class="seven-animal">🪶</div>
+      <div class="seven-name">The Raven</div>
+      <div class="seven-desc">Observational intelligence; seeing what is ignored.</div>
+    </div>
+    <div class="seven-card">
+      <div class="seven-animal">🐋</div>
+      <div class="seven-name">The Whale</div>
+      <div class="seven-desc">Depth and silence; movement without unnecessary noise.</div>
+    </div>
+    <div class="seven-card">
+      <div class="seven-animal">🐻</div>
+      <div class="seven-name">The Bear</div>
+      <div class="seven-desc">Compromiseless ground; structural stability.</div>
+    </div>
+    <div class="seven-card">
+      <div class="seven-animal">🐆</div>
+      <div class="seven-name">The Jaguar</div>
+      <div class="seven-desc">Precision; striking with calculated force.</div>
+    </div>
+    <div class="seven-card">
+      <div class="seven-animal">🐘</div>
+      <div class="seven-name">The Elephant</div>
+      <div class="seven-desc">Archival integrity; the requirement to remember and record.</div>
+    </div>
+    <div class="seven-card">
+      <div class="seven-animal">🐊</div>
+      <div class="seven-name">The Crocodilian</div>
+      <div class="seven-desc">Durability; survival in collapsed environments.</div>
+    </div>
+    <div class="seven-card">
+      <div class="seven-animal">🐍</div>
+      <div class="seven-name">The Serpent</div>
+      <div class="seven-desc">Iteration; the shedding of obsolete layers to become again.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Final Mark -->
+<section id="final">
+  <div class="final-content">
+    <div class="final-sigil reveal">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#C8A44D" stroke-width="0.8" opacity="0.5"/>
+        <circle cx="50" cy="50" r="36" fill="none" stroke="#C8A44D" stroke-width="0.5" opacity="0.3"/>
+        <circle cx="50" cy="50" r="26" fill="none" stroke="#C8A44D" stroke-width="0.3" opacity="0.15"/>
+        <circle cx="50" cy="50" r="4" fill="#C8A44D" opacity="0.9"/>
+        <line x1="50" y1="4" x2="50" y2="20" stroke="#C8A44D" stroke-width="1" opacity="0.7"/>
+        <line x1="50" y1="80" x2="50" y2="96" stroke="#C8A44D" stroke-width="1" opacity="0.7"/>
+        <line x1="4" y1="50" x2="20" y2="50" stroke="#C8A44D" stroke-width="1" opacity="0.7"/>
+        <line x1="80" y1="50" x2="96" y2="50" stroke="#C8A44D" stroke-width="1" opacity="0.7"/>
+        <text x="50" y="57" text-anchor="middle" font-family="serif" font-size="22" fill="#C8A44D" opacity="0.9" font-weight="bold">O</text>
+      </svg>
+    </div>
+
+    <h2 class="final-title reveal">The Final<br>Mark</h2>
+
+    <p class="final-body reveal">Ori'ka does not transform the practitioner. It acts as a Diagnostic Catalyst that reveals what the practitioner already is. Once the reveal is complete, the individual must choose: to remain in a state of misalignment, or to become a functional asset within the structure.</p>
+
+    <div class="final-law reveal">There is no audience. There is no applause. There are no shortcuts. There is only: The Record. The Proof. The Truth.</div>
+
+    <div class="laws-grid reveal">
+      <div class="law-item">
+        <h4>Order Before Motion</h4>
+        <p>Sequential planning over impulsive action. The environment must reflect the objective before movement is authorized.</p>
+      </div>
+      <div class="law-item">
+        <h4>Discipline Over Mood</h4>
+        <p>Consistency over emotional fluctuations. Execution is independent of internal inclination.</p>
+      </div>
+      <div class="law-item">
+        <h4>Position Over Reaction</h4>
+        <p>Tactical stance over defensive response. Superior positioning ensures primary command.</p>
+      </div>
+      <div class="law-item">
+        <h4>Alignment Before Expansion</h4>
+        <p>Structural integrity over premature growth. Expansion absent alignment is structural failure.</p>
+      </div>
+    </div>
+
+    <div class="reveal" style="padding: 48px; border: 1px solid rgba(200,164,77,0.15); background: linear-gradient(135deg, rgba(200,164,77,0.06) 0%, transparent 100%);">
+      <p style="font-family: 'Cinzel', serif; font-size: clamp(14px, 2vw, 18px); letter-spacing: 0.1em; color: var(--bone); line-height: 1.8;">The gate is not locked, but it does not open for effort. It opens for alignment. Once you cross, there is no returning to who you were without knowing exactly why you failed.</p>
+      <p style="font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; color: var(--gold); margin-top: 24px; text-transform: uppercase;">Ori'ka is not entered. It is upheld.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">ORI'KA</div>
+  <div class="footer-mark">Phase I — Systemic Sovereignty — From the Ground Up</div>
+  <div style="font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.3em; color: var(--ash);">Ownership · Power · Peace</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0;
+  let ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top = mouseY + 'px';
+  });
+
+  function animateRing() {
+    ringX += (mouseX - ringX) * 0.12;
+    ringY += (mouseY - ringY) * 0.12;
+    cursorRing.style.left = ringX + 'px';
+    cursorRing.style.top = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button, .pillar-card, .dept-card, .phase-card, .pipeline-card, .seven-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '14px';
+      cursor.style.height = '14px';
+      cursorRing.style.width = '52px';
+      cursorRing.style.height = '52px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '8px';
+      cursor.style.height = '8px';
+      cursorRing.style.width = '36px';
+      cursorRing.style.height = '36px';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 80 * (Array.from(reveals).indexOf(entry.target) % 4));
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Smooth nav scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
